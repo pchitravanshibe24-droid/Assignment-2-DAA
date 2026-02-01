@@ -1,0 +1,64 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+struct Job {
+    string id;
+    int deadline;
+    int profit;
+};
+
+
+bool compare(Job a, Job b) {
+    return a.profit > b.profit;
+}
+
+int main() {
+    int N = 5;
+
+    vector<Job> jobs = {
+        {"J1", 2, 100},
+        {"J2", 1, 19},
+        {"J3", 2, 27},
+        {"J4", 1, 25},
+        {"J5", 3, 15}
+    };
+
+
+    sort(jobs.begin(), jobs.end(), compare);
+
+
+    int maxDeadline = 0;
+    for (auto job : jobs)
+        maxDeadline = max(maxDeadline, job.deadline);
+
+    vector<string> slot(maxDeadline + 1, "");
+    vector<bool> occupied(maxDeadline + 1, false);
+
+    int totalProfit = 0;
+    int countJobs = 0;
+
+
+    for (int i = 0; i < N; i++) {
+        for (int j = jobs[i].deadline; j > 0; j--) {
+            if (!occupied[j]) {
+                occupied[j] = true;
+                slot[j] = jobs[i].id;
+                totalProfit += jobs[i].profit;
+                countJobs++;
+                break;
+            }
+        }
+    }
+
+    cout << "Selected Jobs: ";
+    for (int i = 1; i <= maxDeadline; i++) {
+        if (occupied[i])
+            cout << slot[i] << " ";
+    }
+
+    cout << "\nMaximum Profit = " << totalProfit << endl;
+
+    return 0;
+}
